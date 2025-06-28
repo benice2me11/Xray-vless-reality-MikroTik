@@ -203,6 +203,8 @@ add key=FINGERPRINT_FP name=xvr value=chrome
 add key=SERVER_NAME_SNI name=xvr value=apple.com
 add key=PUBLIC_KEY_PBK name=xvr value=fTndnleCTkK9_jtpwCAdxtEwJUkQ22oY1W8dTza2xHs
 add key=SHORT_ID_SID name=xvr value=29d2d3d5a398
+add key=FLOW name=xvr value=flow-value
+add key=SPIDER_X name=xvr value=/
 ```
 
 7) Теперь создадим сам контейнер. Здесь вам нужно выбрать репозиторий из [Docker Hub](https://hub.docker.com/u/catesin) с архитектурой под ваше устройство.
@@ -326,18 +328,20 @@ nano /opt/start.sh
 
 В содержимое скрипта подставьте конфигурацию клиента для Xray из 3x-ui заполнив следующие переменные. 
 
-| Переменная | Пример значения (у вас должны быть свои) | Пояснение | 
-|:----------:|:----------:|:----------:|
-| SERVER_ADDRESS    | myhost.com   | Конфигурация Xray клиента  |
-| SERVER_PORT    | 443   | Конфигурация Xray клиента  |
-| USER_ID    | e3203dfe-9s62-4de5-bf9b-ecd36c9af225   | Конфигурация Xray клиента  |
-| ENCRYPTION    | none   | Конфигурация Xray клиента  |
-| FINGERPRINT_FP    | chrome   | Конфигурация Xray клиента  |
-| SERVER_NAME_SNI    | apple.com   | Конфигурация Xray клиента  |
-| PUBLIC_KEY_PBK    | fTndnleCTkK9_jtpwCAdxtEwJUkQ22oY1W8dTza2xHs   | Конфигурация Xray клиента  |
-| SHORT_ID_SID    | 29d2d3d5a398   | Конфигурация Xray клиента  |
-| GATEWAY    | 172.18.20.5   | IP шлюз по-умолчанию в Linux (подсмотреть через ```ip r```)|
-| ADAPTER_NAME    | eth0   | Название физического адаптера в Linux (подсмотреть через ```ip a```) |
+|   Переменная    |  Пример значения (у вас должны быть свои)   | Пояснение | 
+|:---------------:|:-------------------------------------------:|:----------:|
+| SERVER_ADDRESS  |                 myhost.com                  | Конфигурация Xray клиента  |
+|   SERVER_PORT   |                     443                     | Конфигурация Xray клиента  |
+|     USER_ID     |    e3203dfe-9s62-4de5-bf9b-ecd36c9af225     | Конфигурация Xray клиента  |
+|   ENCRYPTION    |                    none                     | Конфигурация Xray клиента  |
+| FINGERPRINT_FP  |                   chrome                    | Конфигурация Xray клиента  |
+| SERVER_NAME_SNI |                  apple.com                  | Конфигурация Xray клиента  |
+| PUBLIC_KEY_PBK  | fTndnleCTkK9_jtpwCAdxtEwJUkQ22oY1W8dTza2xHs | Конфигурация Xray клиента  |
+|  SHORT_ID_SID   |                29d2d3d5a398                 | Конфигурация Xray клиента  |
+|      FLOW       |                 flow-value                  | Конфигурация Xray клиента  |
+|    SPIDER_X     |                  spx-value                  | Конфигурация Xray клиента  |
+|     GATEWAY     |                 172.18.20.5                 | IP шлюз по-умолчанию в Linux (подсмотреть через ```ip r```)|
+|  ADAPTER_NAME   |                    eth0                     | Название физического адаптера в Linux (подсмотреть через ```ip a```) |
 
 ```
 #!/bin/sh
@@ -355,6 +359,8 @@ FINGERPRINT_FP=***
 SERVER_NAME_SNI=***
 PUBLIC_KEY_PBK=***
 SHORT_ID_SID=***
+FLOW=***
+SPIDER_X=***
 GATEWAY=***
 ADAPTER_NAME=***
 
@@ -422,6 +428,7 @@ cat <<EOF > /opt/xray/config/config.json
               {
                 "id": "$USER_ID",
                 "encryption": "$ENCRYPTION",
+                "flow": "$FLOW",
                 "alterId": 0
               }
             ]
@@ -435,7 +442,7 @@ cat <<EOF > /opt/xray/config/config.json
           "fingerprint": "$FINGERPRINT_FP",
           "serverName": "$SERVER_NAME_SNI",
           "publicKey": "$PUBLIC_KEY_PBK",
-          "spiderX": "",
+          "spiderX": "$SPIDER_X",
           "shortId": "$SHORT_ID_SID"
         }
       },
